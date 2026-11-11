@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HRA 2026 · 사회자 큐시트</title>
+  <link rel="stylesheet" href="./stage.css">
+  <script src="./cues.js" defer></script>
+  <script src="./presenter.js" defer></script>
+</head>
+<body class="presenter-page">
+  <main>
+    <p class="presenter-label">HRA 2026 / 사회자 큐시트</p>
+    <p id="connection" role="status">발표 화면에 연결하는 중</p>
+    <div class="cue-navigation">
+      <nav aria-label="슬라이드 이동"><button data-action="prev">← 이전</button><button data-action="next">다음 →</button></nav>
+      <p id="cue-next"></p>
+    </div>
+    <h1 id="cue-title">사회자 보기</h1>
+    <p id="cue-line" class="cue-line"></p>
+    <p id="cue-direction" class="cue-direction"></p>
+    <label for="caption-input">관객 화면 자막</label>
+    <textarea id="caption-input" rows="2" maxlength="100" placeholder="필요한 한 문장을 입력하세요"></textarea>
+    <div class="presenter-actions">
+      <button data-action="caption">자막 보내기</button><button data-action="clear">자막 지우기</button><button id="cue-action" data-action="cue">장면 진행</button>
+    </div>
+    <details id="cue-scores">
+      <summary>기숙사 점수 입력</summary>
+      <form id="cue-score-form">
+        <label>그리핀도르 <input type="number" min="0" max="99999" required></label>
+        <label>슬리데린 <input type="number" min="0" max="99999" required></label>
+        <label>래번클로 <input type="number" min="0" max="99999" required></label>
+        <label>후플푸프 <input type="number" min="0" max="99999" required></label>
+        <button>점수 저장</button>
+      </form>
+    </details>
+  </main>
+</body>
+</html>
