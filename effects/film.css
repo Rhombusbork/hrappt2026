@@ -1,0 +1,12 @@
+/* 연출 B4: 필름 파노라마. 처음엔 아주 빠르게, 점점 느려지며 빠져나간다. */
+.slide[data-id=quiz1-title] .film-reel{position:absolute;inset:0;z-index:3;display:grid;align-content:center;gap:3cqw;pointer-events:none;animation:film-reel-out 3.3s both}
+@keyframes film-reel-out{0%{opacity:0}6%{opacity:1}85%{opacity:1}100%{opacity:0}}
+.slide[data-id=quiz1-title] .film-strip{display:flex;gap:.9cqw;width:max-content;padding:1.6cqw .9cqw;background:repeating-linear-gradient(90deg,#e8d7b4 0 1.1cqw,#0000 1.1cqw 2.3cqw) 0 .4cqw/100% .7cqw no-repeat,repeating-linear-gradient(90deg,#e8d7b4 0 1.1cqw,#0000 1.1cqw 2.3cqw) 0 calc(100% - .4cqw)/100% .7cqw no-repeat,#120d0b;box-shadow:0 1cqw 3cqw #000c}
+.slide[data-id=quiz1-title] .film-strip img{display:block;width:21cqw;height:14cqw;object-fit:cover;filter:sepia(.25) contrast(1.05);border-radius:.3cqw}
+.slide[data-id=quiz1-title] .film-forward{rotate:-4deg;animation:film-run-forward 3.1s cubic-bezier(.12,.75,.35,1) both}
+.slide[data-id=quiz1-title] .film-backward{rotate:-4deg;animation:film-run-backward 3.1s cubic-bezier(.12,.75,.35,1) both}
+@keyframes film-run-forward{from{translate:100cqw 0;filter:blur(.35cqw)}35%{filter:blur(.1cqw)}to{translate:-420cqw 0;filter:blur(0)}}
+@keyframes film-run-backward{from{translate:-480cqw 0;filter:blur(.35cqw)}35%{filter:blur(.1cqw)}to{translate:40cqw 0;filter:blur(0)}}
+.slide[data-id=quiz1-title].film-rolling .reveal-standalone{visibility:hidden}
+.slide[data-id=quiz1-title].cue-revealed h1{font-size:9cqw;animation:film-title 1s cubic-bezier(.2,.9,.3,1.25) both}
+@keyframes film-title{from{opacity:0;scale:1.6;filter:blur(1cqw)}to{opacity:1;scale:1;filter:none}}

@@ -1,0 +1,15 @@
+/* 연출 B3: 기숙사 배너가 위에서 떨어져 내려와 살짝 튕기고 흔들리다 멈춘다. */
+.slide[data-id=houses] .banners{position:relative}
+.slide[data-id=houses] .banners::before{content:"";position:absolute;z-index:2;inset:0 0 auto;height:1.5cqw;background:linear-gradient(#f6dc9c,#b8893f 55%,#6d4b1c);box-shadow:0 .3cqw .8cqw #000a}
+.slide[data-id=houses] .banner{opacity:1;transition:none;translate:0 -105%;transform-origin:50% 0;background:repeating-linear-gradient(90deg,#0000 0 1.6cqw,#0000000d 1.6cqw 2cqw),linear-gradient(90deg,#0006,#fff2 45%,#0005),var(--house)}
+.slide[data-id=houses] .banner.is-shown{translate:0 0;animation:banner-drop 1.3s cubic-bezier(.3,.6,.3,1) both}
+.slide[data-id=houses] .banner::after{content:"";position:absolute;inset:auto 0 0;height:9%;background:repeating-linear-gradient(90deg,#e7c27a 0 .25cqw,#9b7232 .25cqw .5cqw);mask:linear-gradient(#000,#0000)}
+.slide[data-id=houses] .banner{position:relative}
+@keyframes banner-drop{
+  0%{translate:0 -105%;rotate:0deg}
+  55%{translate:0 2.5%;rotate:0deg}
+  68%{translate:0 -1.2%;rotate:1.1deg}
+  80%{translate:0 .5%;rotate:-.7deg}
+  91%{translate:0 0;rotate:.3deg}
+  100%{translate:0 0;rotate:0deg}
+}

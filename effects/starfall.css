@@ -1,0 +1,4 @@
+/* 연출 B2: 금빛 별빛. 글자 뒤로 지나가게 캔버스를 글자 아래에 둔다. */
+.slide[data-id=photo] .starfall{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.slide[data-id=photo] :is(h1,.description){position:relative}
+.slide[data-id=photo] h1{text-shadow:0 0 .4em #ffc96a66,0 .06em .08em #000}

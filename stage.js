@@ -1,46 +1,18 @@
-const slides = [
-  ['입장 대기', '해피 크리스마스, 흐라', '검은 호수를 건너, 오늘 밤의 연회로.', 'hero'],
-  ['오프닝', '입학통지서', 'HRA 마법학교의 겨울 연회에 여러분을 초대합니다.', 'paper', '✦'],
-  ['개회', '대연회장의 문이 열립니다', '기숙사 대항전 · 크리스마스 만찬 · 명예의 전당', 'wine', '✧'],
-  ['내빈 소개', '오늘의 귀빈', '교수님과 멘토진, 후원진, 선배님들을 소개합니다.', '', 'guests'],
-  ['내빈 명단 관리', '내빈 소개 준비', '운영 패널에서 시연 명단을 추가하거나 표시 여부를 바꿀 수 있습니다.', 'paper', 'staff'],
-  ['기숙사 대항전', '네 기숙사, 하나의 연회', '오늘 밤 함께 기숙사 컵에 도전합니다.', 'wine', 'houses'],
-  ['20기 소개', 'HRA 20기 학생증', '마법학교 신입생들을 소개합니다.', 'paper', 'students'],
-  ['1부 · 기억의 필름', '20기의 기억을 되감다', '전반기 수업과 활동을 함께 돌아봅니다.', 'hero', 'film'],
-  ['20기를 맞춰라 · 문제 01', '전반기에 가장 많이 발표한 사람은?', '기숙사별로 상의한 뒤 후보를 선택하세요.', '', 'quiz'],
-  ['20기를 맞춰라 · 정답 01', '정답 공개', '', 'paper', 'answer'],
-  ['1부 · 퀴즈 2', '봉인된 기억을 고르세요', '네 장의 카드 중 한 장을 선택하세요.', 'wine', 'cards'],
-  ['교수님을 맞혀라 · 문제 02', '이 어린이는 누구일까요?', '', '', 'photo'],
-  ['교수님을 맞혀라 · 정답 02', '정답 공개', '', 'paper', 'photo'],
-  ['만찬', '크리스마스 만찬', '함께 식사하며 오늘의 이야기를 나눠 주세요.', 'wine', '✦'],
-  ['20기 활동 영상', '기억의 극장', 'HRA 20기의 전반기 활동을 돌아봅니다.', '', 'video'],
-  ['2부 · 교류 빙고', '아홉 칸의 인맥 지도', '종이 빙고판을 들고 조건에 맞는 사람을 찾아보세요.', 'paper', 'bingo'],
-  ['2부 · 빙고 진행', '제한 시간 10분', '', '', 'timer'],
-  ['2부 · 물병 볼링', '물약병 볼링', '물병이 멈춘 구간에 따라 점수를 얻습니다.', 'paper', 'bowling'],
-  ['2부 · 최종 순위', '기숙사 컵 점수판', '퀴즈와 물병 볼링 합산 결과', '', 'scores'],
-  ['휴식', '잠시, 별빛 아래에서', '10분 뒤 명예의 전당에서 만나요.', 'hero', 'timer'],
-  ['3부 · 시상식', '명예의 전당', '오늘의 수상자들에게 축하를 전합니다.', 'wine', '✦'],
-  ['부문별 시상', '수상자를 소개합니다', '수상자 이름과 활동 사진을 공개합니다.', 'paper', 'awards'],
-  ['귀빈 말씀', '감사와 격려의 말씀', '교수님 격려 말씀 · 위원장 마무리 인사', '', '✧'],
-  ['단체사진 안내', '무대 앞으로 모여 주세요', '촬영 전 아래 순서대로 자리해 주세요.', 'paper', 'rows'],
-  ['기념 촬영', 'HRA 송년회', 'Happy Christmas, HR', 'hero photo-wall'],
-  ['폐회', '다음 목적지를 향해서', '오늘 밤의 여정에 함께해 주셔서 감사합니다.', 'hero'],
-];
-
-const houses = [
-  { name: '그리핀도르', color: '#bc626b' },
-  { name: '슬리데린', color: '#62a88f' },
-  { name: '래번클로', color: '#739dd5' },
-  { name: '후플푸프', color: '#e0b85b' },
-];
+// 슬라이드 목록과 화면 자료는 slides.js에 있다. 이 파일은 그리기와 진행만 맡는다.
+const houses = HRA_DATA.houses;
+const flow = slides.filter(item => !item.spare);
+const byId = new Map(slides.map(item => [item.id, item]));
 const get = id => document.getElementById(id);
-const storeKey = 'hra-live-slides-v1';
+const storeKey = 'hra-live-slides-v2';
 const initialState = {
   scores: [0, 0, 0, 0],
-  guests: [{ name: '윤지후', role: '지도 교수 · 시연' }, { name: '박서연', role: '선배 · 시연' }],
+  guests: [
+    { name: '윤지후', role: '지도 교수 · 시연', occupation: '', hobby: '' },
+    { name: '박서연', role: '선배 · 시연', occupation: '', hobby: '' },
+  ],
 };
 let state = readState();
-let index = 0;
+let current = flow[0];
 let countdown;
 let memory = 1;
 const mediaFiles = new Map();
@@ -50,18 +22,20 @@ let presenterWindow;
 let staged = false;
 let revealed = false;
 let captionJob;
-const revealLabels = new Map([[1, '봉인 열기'], [9, '정답 공개'], [12, '현재 사진 공개'], [18, '순위 공개'], [21, '시상 공개']]);
-const cueLabels = new Map([[3, '다음 학생증'], [11, '15초 시작'], [14, '영상 재생'], [16, '빙고 시작'], [19, '휴식 시작']]);
+let effectCleanup;
+let lastRendered = null;
+let cameFrom = null;
 const origin = location.protocol === 'file:' ? '*' : location.origin;
 const candidates = ['이도윤', '김하늘', '최서현', '윤지후'];
 const correctCandidate = 1;
-const answerPages = new Set([9, 12]);
 let chosenCandidate = null;
 let answerLocked = false;
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function readState() {
   try {
-    return JSON.parse(localStorage.getItem(storeKey)) ?? structuredClone(initialState);
+    const saved = JSON.parse(localStorage.getItem(storeKey));
+    return saved ?? structuredClone(initialState);
   } catch {
     return structuredClone(initialState);
   }
@@ -79,6 +53,13 @@ function node(tag, content, className) {
   const el = document.createElement(tag);
   if (content) el.textContent = content;
   if (className) el.className = className;
+  return el;
+}
+
+function image(src, className, alt = '') {
+  const el = node('img', '', className);
+  el.src = src;
+  el.alt = alt;
   return el;
 }
 
@@ -101,17 +82,18 @@ function tiles(parent, entries, className = '') {
   parent.append(list);
 }
 
-function choices(parent, labels, action) {
-  const list = node('div', '', 'tiles');
-  labels.forEach((label, i) => {
-    const choice = button(label, () => {
-      for (const other of list.children) other.setAttribute('aria-pressed', String(other === choice));
-      action?.(i);
-    });
-    choice.setAttribute('aria-pressed', 'false');
-    list.append(choice);
-  });
-  parent.append(list);
+function flowIndex(item = current) {
+  return flow.indexOf(item);
+}
+
+function pageNumber(item = current) {
+  const position = flowIndex(item);
+  return position < 0 ? '예비' : String(position + 1).padStart(2, '0');
+}
+
+function sceneUrl(scene) {
+  if (!scene) return 'none';
+  return [scene].flat().map(name => 'url("./' + (name.includes('/') ? name : 'scenes/' + name + '.webp') + '")').join(',');
 }
 
 function timer(parent, duration) {
@@ -152,41 +134,22 @@ function stopTimer() {
   countdown = undefined;
 }
 
-function media(parent, video, label) {
-  const wrapper = node('div', '', 'media');
-  const asset = node(video ? 'video' : 'img');
-  const key = index + ':' + (video ? 'video' : memory);
-  const sample = index === 11 ? './portraits/child.webp' : index === 12 ? './portraits/adult.webp' : undefined;
-  const saved = mediaFiles.get(key) ?? sample;
-  asset.hidden = !saved;
-  if (saved) asset.src = saved;
-  if (video) {
-    asset.controls = true;
-    asset.playsInline = true;
-  } else {
-    asset.alt = label;
-    asset.className = 'photo-demo';
-  }
-  const younger = index === 12 ? mediaFiles.get('11:' + memory) ?? './portraits/child.webp' : undefined;
-  if (younger) {
-    const previous = node('img', '', 'photo-demo photo-before');
-    previous.src = younger;
-    previous.alt = '';
+function photo(parent, kind) {
+  const key = kind + ':' + memory;
+  const sample = kind === 'child' ? './portraits/child.webp' : './portraits/adult.webp';
+  const asset = image(mediaFiles.get(key) ?? sample, 'photo-demo', '카드 ' + memory + '번 사진');
+  if (kind === 'adult') {
     const portraits = node('div', '', 'portrait-transition');
-    portraits.append(previous, asset);
-    wrapper.append(portraits);
+    portraits.append(image(mediaFiles.get('child:' + memory) ?? './portraits/child.webp', 'photo-demo photo-before'), asset);
+    parent.append(portraits);
   } else {
-    wrapper.append(asset);
+    parent.append(asset);
   }
-  parent.append(wrapper);
-  if (!video && !mediaFiles.has(key)) parent.append(node('p', '시연용 인물 사진', 'note'));
+  if (!mediaFiles.has(key)) parent.append(node('p', '시연용 인물 사진', 'note'));
 }
 
 function candidatePortrait(position) {
-  const portrait = node('img', '', 'candidate-portrait');
-  portrait.src = './portraits/candidate-' + (position + 1) + '.webp';
-  portrait.alt = '';
-  return portrait;
+  return image('./portraits/candidate-' + (position + 1) + '.webp', 'candidate-portrait');
 }
 
 function renderQuestion(body) {
@@ -226,68 +189,111 @@ function renderQuestion(body) {
 
 function renderAnswer(body) {
   const result = node('div', '', 'answer-feature');
-  const photo = candidatePortrait(correctCandidate);
   const text = node('div', '', 'answer-copy');
   text.append(node('span', '정답 · 2번', 'answer-tag'), node('strong', candidates[correctCandidate]), node('span', '최다 발표자 · 시연 정답'));
   if (answerLocked) {
     text.append(node('span', chosenCandidate === correctCandidate ? '확정 답안과 일치합니다' : '확정 답안 · ' + (chosenCandidate + 1) + '번', 'answer-outcome'));
   }
   text.append(node('span', '정답 기숙사 +30점', 'answer-points'));
-  result.append(photo, text);
+  result.append(candidatePortrait(correctCandidate), text);
   body.append(result);
 }
 
+// 초대장(hra26yep.vercel.app)의 학생증과 같은 항목과 배치.
+function studentCard(guest, i) {
+  const saved = mediaFiles.get('guest:' + guest.name);
+  if (saved) {
+    const card = image(saved, 'student-card-image', guest.name + ' 학생증');
+    card.dataset.step = String(i);
+    return card;
+  }
+  const house = houses.find(item => item.name === guest.house);
+  const card = node('article', '', 'student-card');
+  card.dataset.step = String(i);
+  card.style.setProperty('--ink', house?.color ?? '#6f283b');
+  const head = node('header', '', 'student-card-head');
+  const title = node('div');
+  title.append(node('b', 'HRA 2026'), node('small', '학생증'));
+  head.append(image(house?.crest ?? './art/crest_master.png', 'student-card-crest'), title);
+  const portrait = node('div', '', 'student-card-portrait');
+  portrait.innerHTML = '<svg viewBox="0 0 64 82" aria-hidden="true"><circle cx="32" cy="28" r="12"/><path d="M10 67c0-15 9-24 22-24s22 9 22 24Z"/><path class="portrait-star" d="M48 14l2-5 2 5 5 2-5 2-2 5-2-5-5-2Z"/></svg>';
+  const fields = node('dl', '', 'student-card-fields');
+  const field = (label, value, className) => {
+    const row = node('div');
+    row.append(node('dt', label), node('dd', value || '—', className));
+    return row;
+  };
+  fields.append(field('이름', guest.name, 'student-card-name'), field('소속', guest.role));
+  if (guest.occupation) fields.append(field('하는 일', guest.occupation));
+  if (guest.hobby) fields.append(field('취미', guest.hobby));
+  const main = node('div', '', 'student-card-body');
+  main.append(portrait, fields);
+  const foot = node('footer', '', 'student-card-foot');
+  const sign = node('div', '', 'student-card-sign');
+  sign.append(node('small', '서명'));
+  foot.append(sign, node('strong', house?.name ?? '기숙사', 'student-card-house'));
+  card.append(head, main, foot);
+  return card;
+}
+
 const sceneBodies = {
+  welcome: body => {
+    const scroll = node('div', '', 'welcome-scroll reveal-target');
+    scroll.append(node('strong', '신입생 여러분 입학을 축하합니다', 'welcome-ko'), node('span', 'Welcome to HRAWarts', 'welcome-en'));
+    body.append(image('./art/wax-seal.webp', 'welcome-seal', '밀랍 인장'), scroll);
+  },
   guests: body => {
     const visible = state.guests.filter(guest => !guest.hidden);
-    if (!visible.length) return body.append(node('p', '표시할 내빈이 없습니다.'));
-    let selected = 0;
-    const card = node('div');
-    const renderCard = () => {
-      card.replaceChildren();
-      tiles(card, [[visible[selected].name, visible[selected].role]]);
-    };
-    body.append(card);
-    if (visible.length > 1) {
-      const next = button('다음 학생증', () => {
-        selected = (selected + 1) % visible.length;
-        renderCard();
-      });
-      next.dataset.cue = 'true';
-      body.append(next);
-    }
-    renderCard();
+    if (!visible.length) return body.append(node('p', '표시할 내빈이 없습니다. 운영 패널에서 추가해 주세요.', 'note'));
+    const deck = node('div', '', 'student-deck');
+    visible.forEach((guest, i) => deck.append(studentCard(guest, i)));
+    body.append(deck);
   },
-  staff: body => body.append(button('운영 패널 열기', openOperator)),
-  houses: body => tiles(body, houses.map((house, i) => [house.name, (i + 1) + '조', house.color]), 'score'),
+  houses: body => {
+    const banners = node('div', '', 'banners');
+    houses.forEach((house, i) => {
+      const banner = node('div', '', 'banner');
+      banner.dataset.step = String(i);
+      banner.style.setProperty('--house', house.color);
+      banner.append(image(house.crest, 'banner-crest', house.name + ' 문장'), node('strong', house.name, 'banner-name'));
+      banners.append(banner);
+    });
+    body.append(banners);
+  },
   students: body => tiles(body, [['김하늘', '20기 · 그리핀도르'], ['이도윤', '20기 · 슬리데린'], ['최서현', '20기 · 래번클로']], 'students'),
-  film: body => tiles(body, [['수업', '01'], ['토론', '02'], ['현장 활동', '03']]),
   quiz: renderQuestion,
   answer: renderAnswer,
-  cards: body => {
-    const selected = node('p', '카드 ' + memory + '번', 'note');
-    choices(body, ['I', 'II', 'III', 'IV'], i => {
-      memory = i + 1;
-      selected.textContent = '카드 ' + memory + '번 선택';
-    });
-    body.append(selected);
+  capsule: body => {
+    const stage = node('div', '', 'capsule-stage');
+    const reveal = node('div', '', 'capsule-reveal reveal-target');
+    photo(reveal, 'child');
+    timer(reveal, 15);
+    stage.append(node('div', '', 'capsule-box'), reveal);
+    body.append(stage);
   },
   photo: body => {
-    media(body, false, '카드 ' + memory + '번 사진 선택');
-    if (index === 11) timer(body, 15);
-    else {
-      const hasEventPhoto = mediaFiles.has('11:' + memory) || mediaFiles.has('12:' + memory);
-      const name = photoAnswerNames.get(String(memory)) || (hasEventPhoto ? '현재 모습' : '윤지후 교수님 · 시연');
-      body.append(node('p', name, 'photo-answer-name'));
-    }
+    photo(body, 'adult');
+    const hasEventPhoto = mediaFiles.has('child:' + memory) || mediaFiles.has('adult:' + memory);
+    const name = photoAnswerNames.get(String(memory)) || (hasEventPhoto ? '현재 모습' : '윤지후 교수님 · 시연');
+    body.append(node('p', name, 'photo-answer-name'));
   },
-  video: body => media(body, true, '20기 활동 영상 선택'),
-  bingo: body => tiles(body, ['다른 기수', '같은 고향', '같은 취미', '책 추천', '첫 참석', '같은 생일 월', '다른 기숙사', '새로 만난 선배', '공통 관심사'].map(item => [item]), 'bingo'),
-  timer: body => timer(body, 600),
+  video: body => {
+    const wrapper = node('div', '', 'media');
+    const saved = mediaFiles.get('video');
+    if (saved) {
+      const video = node('video');
+      Object.assign(video, { src: saved, controls: true, playsInline: true });
+      wrapper.append(video);
+    } else {
+      wrapper.append(node('div', '영상 자리', 'video-placeholder'));
+    }
+    body.append(wrapper);
+  },
+  bingo: body => tiles(body, HRA_DATA.bingo.map(item => [item]), 'bingo'),
+  timer: body => timer(body, current.duration ?? 600),
   bowling: body => tiles(body, [['100점', '가장 먼 구간'], ['50점', '중간 구간'], ['10점', '가까운 구간']]),
   scores: body => {
     const max = Math.max(...state.scores);
-    const winners = houses.filter((_, i) => state.scores[i] === max);
     const board = node('div', '', 'score-board');
     houses.forEach((house, i) => {
       const row = node('div', '', 'score-row');
@@ -297,73 +303,173 @@ const sceneBodies = {
       bar.style.width = (max ? score / max * 100 : 0) + '%';
       bar.style.background = house.color;
       track.append(bar);
-      row.append(node('strong', house.name), track, node('span', score + '점'));
+      const name = node('span', '', 'score-house');
+      name.append(image(house.crest, 'score-crest'), node('strong', house.name));
+      row.append(name, track, node('b', String(score), 'score-total'));
       board.append(row);
     });
     body.append(board);
-    const summary = max === 0 ? '점수 입력 대기 중' : (winners.length > 1 ? '공동 1위 · ' : '1위 · ') + winners.map(house => house.name).join(' · ');
-    body.append(node('p', summary, 'note'));
   },
-  awards: body => tiles(body, [['교수님 감사장', '감사와 존경을 담아'], ['전반기 개근상', '꾸준한 참여'], ['최다 발표상', '활발한 발표']]),
+  winner: body => {
+    const max = Math.max(...state.scores);
+    if (!max) return body.append(node('p', '점수 입력 대기 중', 'winner-waiting'));
+    const winners = houses.filter((_, i) => state.scores[i] === max);
+    const podium = node('div', '', 'winner-podium');
+    if (winners.length > 1) podium.append(node('span', '공동 1위', 'winner-tie'));
+    const list = node('div', '', 'winner-list');
+    for (const house of winners) {
+      const card = node('div', '', 'winner-house');
+      card.style.setProperty('--house', house.color);
+      card.append(image(house.crest, 'winner-crest', house.name + ' 문장'), node('strong', house.name));
+      list.append(card);
+    }
+    podium.append(list, node('b', max + '점', 'winner-score'));
+    body.append(podium);
+  },
+  awards: body => {
+    const list = node('div', '', 'award-scrolls');
+    list.style.setProperty('--count', HRA_DATA.awards.length);
+    HRA_DATA.awards.forEach((award, i) => {
+      const scroll = node('div', '', 'award-scroll');
+      scroll.dataset.step = String(i);
+      scroll.append(node('span', award.category, 'award-category'), node('strong', award.name, 'award-name'));
+      list.append(scroll);
+    });
+    body.append(list);
+  },
   rows: body => tiles(body, [['1열', '교수님 · 내빈'], ['2열', '1~19기 선배님'], ['3열', 'HRA 20기']]),
 };
 
+function stepItems() {
+  return [...slide.querySelectorAll('[data-step]')];
+}
+
+function showStep() {
+  const next = stepItems().find(item => !item.classList.contains('is-shown'));
+  if (!next) return false;
+  slide.querySelector('.is-current')?.classList.remove('is-current');
+  next.classList.add('is-shown', 'is-current');
+  notifyPresenter();
+  return true;
+}
+
+const effectApi = {
+  next: () => goStep(1),
+  wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
+  reveal: () => reveal(),
+  get reduced() { return reducedMotion(); },
+  get step() { return slide.querySelectorAll('[data-step].is-shown').length; },
+  get id() { return current.id; },
+  get from() { return cameFrom; },
+};
+
+function effect() {
+  return window.HRA_EFFECTS?.[current.effect];
+}
+
 function render() {
   stopTimer();
-  const [chapter, title, description, theme, content] = slides[index];
-  const page = String(index + 1).padStart(2, '0');
-  slide.className = 'slide ' + theme + (theme === 'hero' ? '' : ' center');
-  slide.dataset.content = content ?? '';
-  slide.dataset.page = page;
-  slide.style.setProperty('--scene-image', 'url("./scenes/p' + page + '.webp")');
-  const frame = node('div', '', 'scene-frame');
-  frame.setAttribute('aria-hidden', 'true');
-  for (let corner = 0; corner < 4; corner++) frame.append(node('span', '❦'));
-  slide.replaceChildren(frame, node('span', 'HRA', 'mark'));
-  if (content && !sceneBodies[content]) slide.append(node('div', content, 'ornament'));
-  slide.append(node('p', index === 0 ? 'HRA 2026  /  YEAR-END PARTY' : chapter, 'eyebrow'), node('h1', title));
-  if (description) slide.append(node('p', description, 'description'));
-  if (sceneBodies[content]) {
-    const body = node('div', '', 'scene-body');
-    sceneBodies[content](body);
-    slide.append(body);
+  try {
+    effectCleanup?.();
+  } catch (error) {
+    console.error(error);
   }
-  slide.append(node('span', index === 0 ? '2026.12.26  ·  JEJU' : 'HRA 2026  /  P' + page, 'corner'));
+  effectCleanup = undefined;
+  const item = current;
+  cameFrom = lastRendered;
+  lastRendered = item.id;
+  const page = pageNumber(item);
+  slide.className = 'slide ' + item.theme;
+  slide.dataset.id = item.id;
+  slide.dataset.content = item.body ?? '';
+  slide.style.setProperty('--scene-image', sceneUrl(item.scene));
+  slide.replaceChildren();
+  if (item.theme !== 'blackout') {
+    if (item.theme !== 'bare') {
+      const frame = node('div', '', 'scene-frame');
+      frame.setAttribute('aria-hidden', 'true');
+      for (let corner = 0; corner < 4; corner++) frame.append(node('span', '❦'));
+      slide.append(frame, node('span', 'HRA', 'mark'));
+    }
+    if (item.eyebrow) slide.append(node('p', item.eyebrow, 'eyebrow'));
+    if (item.title) slide.append(node('h1', item.title));
+    if (item.description) slide.append(node('p', item.description, 'description'));
+    if (sceneBodies[item.body]) {
+      const body = node('div', '', 'scene-body');
+      sceneBodies[item.body](body);
+      slide.append(body);
+    }
+    if (item.theme !== 'bare') slide.append(node('span', item.corner ?? 'HRA 2026  /  ' + (item.spare ? '예비' : 'P' + page), 'corner'));
+  }
+  if (item.reveal) {
+    const parts = { title: 'h1', description: '.description', body: '.scene-body' };
+    for (const part of item.revealHide ?? ['description', 'body']) slide.querySelector(parts[part])?.classList.add('reveal-target');
+  }
+  const steps = stepItems();
+  steps.slice(0, item.stepsStart ?? 0).forEach(step => step.classList.add('is-shown'));
+  steps[(item.stepsStart ?? 0) - 1]?.classList.add('is-current');
   updateReveal();
-  notifyPresenter();
   get('number').textContent = page;
-  get('progress').style.width = ((index + 1) * 100 / slides.length) + '%';
-  get('prev').disabled = index === 0;
-  get('next').disabled = index === slides.length - 1;
+  get('total').textContent = ' / ' + flow.length;
+  get('progress').style.width = ((Math.max(flowIndex(), 0) + 1) * 100 / flow.length) + '%';
+  get('prev').disabled = item === flow[0];
+  get('next').disabled = item === flow.at(-1);
+  try {
+    const cleanup = effect()?.enter?.(slide, effectApi);
+    if (typeof cleanup === 'function') effectCleanup = cleanup;
+  } catch (error) {
+    console.error(error);
+  }
+  notifyPresenter();
+}
+
+function waiting() {
+  return Boolean(current.reveal && !revealed && (staged || current.revealAlways));
 }
 
 function updateReveal() {
-  const waiting = !revealed && revealLabels.has(index) && (staged || answerPages.has(index));
-  slide.classList.toggle('awaiting-cue', waiting);
-  for (const item of slide.querySelectorAll('.description,.scene-body')) item.hidden = waiting;
-  if (waiting) {
-    if (answerPages.has(index)) slide.append(node('p', '정답을 공개할 준비가 되면 큐를 실행하세요.', 'suspense-line'));
-    const reveal = button(revealLabels.get(index), runCue);
-    reveal.className = 'reveal-standalone';
-    slide.append(reveal);
-  }
+  const isWaiting = waiting();
+  slide.classList.toggle('awaiting-cue', isWaiting);
+  if (!isWaiting) return;
+  if (current.suspense) slide.append(node('p', '정답을 공개할 준비가 되면 큐를 실행하세요.', 'suspense-line'));
+  const control = button(current.reveal, runCue);
+  control.className = 'reveal-standalone';
+  slide.append(control);
+}
+
+function reveal() {
+  if (!slide.classList.contains('awaiting-cue')) return false;
+  revealed = true;
+  slide.classList.remove('awaiting-cue');
+  slide.classList.add('cue-revealed');
+  slide.querySelector('.reveal-standalone')?.remove();
+  slide.querySelector('.suspense-line')?.remove();
+  notifyPresenter();
+  return true;
 }
 
 function runCue() {
-  if (slide.classList.contains('awaiting-cue')) {
-    revealed = true;
-    slide.classList.remove('awaiting-cue');
-    slide.classList.add('cue-revealed');
-    for (const item of slide.querySelectorAll('.description,.scene-body')) item.hidden = false;
-    slide.querySelector('.reveal-standalone')?.remove();
-    slide.querySelector('.suspense-line')?.remove();
-    notifyPresenter();
-  } else if (index === 14) {
-    const video = slide.querySelector('video:not([hidden])');
-    if (video) video.play().catch(() => video.focus());
-  } else {
-    slide.querySelector('[data-cue]')?.click();
+  try {
+    if (effect()?.cue?.(slide, effectApi) === true) return;
+  } catch (error) {
+    console.error(error);
   }
+  if (reveal() || showStep()) return;
+  if (current.id === 'video') {
+    const video = slide.querySelector('video');
+    if (video) video.play().catch(() => video.focus());
+    return;
+  }
+  const control = slide.querySelector('[data-cue]');
+  if (control) control.click();
+  else if (current.cueNext) goStep(1);
+}
+
+function actionLabel() {
+  if (waiting()) return current.reveal;
+  if (current.steps && stepItems().some(item => !item.classList.contains('is-shown'))) return current.stepLabel;
+  if (current.id === 'quiz1-q') return chosenCandidate !== null && !answerLocked ? '답안 확정' : '';
+  return current.cue ?? '';
 }
 
 function setCaption(value) {
@@ -372,7 +478,7 @@ function setCaption(value) {
   const text = typeof value === 'string' ? value.trim().slice(0, 100) : '';
   caption.hidden = !text;
   caption.textContent = '';
-  if (!text || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!text || reducedMotion()) {
     caption.textContent = text;
     return;
   }
@@ -385,13 +491,18 @@ function setCaption(value) {
   write();
 }
 
+function neighbour(direction) {
+  const position = flowIndex();
+  if (position >= 0) return flow[position + direction];
+  const anchor = flow.indexOf(byId.get(current.after));
+  return flow[direction > 0 ? anchor + 1 : anchor];
+}
+
 function notifyPresenter() {
   if (!presenterWindow || presenterWindow.closed) return;
-  const next = index === 3 ? slides[5] : slides[index + 1];
-  const reveal = !revealed && revealLabels.get(index);
   presenterWindow.postMessage({
-    hra: 'stage', index, title: slides[index][1], next: next?.[0], scores: state.scores,
-    actionLabel: reveal || (index === 8 && chosenCandidate !== null && !answerLocked ? '답안 확정' : cueLabels.get(index)) || '',
+    hra: 'stage', id: current.id, page: pageNumber(), total: flow.length, title: current.title || current.chapter,
+    next: neighbour(1)?.chapter, first: current === flow[0], scores: state.scores, actionLabel: actionLabel(),
   }, origin);
 }
 
@@ -414,10 +525,10 @@ addEventListener('message', event => {
       render();
       break;
     case 'next':
-      go(index === 3 ? 5 : index + 1);
+      goStep(1);
       break;
     case 'prev':
-      go(index === 5 ? 3 : index - 1);
+      goStep(-1);
       break;
     case 'cue':
       runCue();
@@ -431,18 +542,30 @@ addEventListener('message', event => {
     case 'scores':
       if (Array.isArray(data.text) && data.text.length === houses.length &&
           data.text.every(score => Number.isInteger(score) && score >= 0 && score <= 99999)) {
-        state.scores = data.text;
-        save();
-        if (index === 18) render();
-        else notifyPresenter();
+        updateScores(data.text);
       }
       break;
   }
 });
 
-function go(position) {
-  if (position < 0 || position >= slides.length || position === index) return;
-  location.hash = 'p' + (position + 1);
+function updateScores(scores) {
+  state.scores = scores;
+  save();
+  if (['scores', 'winner'].includes(current.id)) render();
+  else notifyPresenter();
+}
+
+function hashFor(item) {
+  return item.spare ? item.id : 'p' + (flowIndex(item) + 1);
+}
+
+function go(item) {
+  if (!item || item === current) return;
+  location.hash = hashFor(item);
+}
+
+function goStep(direction) {
+  go(neighbour(direction));
 }
 
 function openOperator() {
@@ -463,30 +586,37 @@ function openOperator() {
 
 function updateMediaStatus() {
   const card = get('media-card').value;
-  const child = mediaFiles.has('11:' + card) ? '등록됨' : '시연 사진';
-  const adult = mediaFiles.has('12:' + card) ? '등록됨' : '시연 사진';
-  const video = mediaFiles.has('14:video') ? '등록됨' : '미등록';
+  const child = mediaFiles.has('child:' + card) ? '등록됨' : '시연 사진';
+  const adult = mediaFiles.has('adult:' + card) ? '등록됨' : '시연 사진';
+  const video = mediaFiles.has('video') ? '등록됨' : '미등록';
   get('photo-answer-name').value = photoAnswerNames.get(card) ?? '';
   get('media-status').textContent = '카드 ' + card + '번 · 어린 시절 ' + child + ' · 현재 ' + adult + ' · 영상 ' + video;
 }
 
-get('media-card').addEventListener('change', updateMediaStatus);
+function keepFile(key, file) {
+  const previous = mediaFiles.get(key);
+  if (previous) URL.revokeObjectURL(previous);
+  mediaFiles.set(key, URL.createObjectURL(file));
+}
+
+get('media-card').addEventListener('change', event => {
+  memory = Number(event.target.value);
+  updateMediaStatus();
+  if (['quiz2-q', 'quiz2-a'].includes(current.id)) render();
+});
 get('photo-answer-name').addEventListener('change', event => {
   photoAnswerNames.set(get('media-card').value, event.target.value.trim());
-  if (index === 12) render();
+  if (current.id === 'quiz2-a') render();
 });
-for (const [id, prefix] of [['child-file', '11:'], ['adult-file', '12:'], ['activity-file', '14:']]) {
+for (const [id, kind] of [['child-file', 'child'], ['adult-file', 'adult'], ['activity-file', 'video']]) {
   const picker = get(id);
   picker.addEventListener('change', () => {
     const file = picker.files[0];
     if (!file) return;
-    const key = prefix + (prefix === '14:' ? 'video' : get('media-card').value);
-    const previous = mediaFiles.get(key);
-    if (previous) URL.revokeObjectURL(previous);
-    mediaFiles.set(key, URL.createObjectURL(file));
+    keepFile(kind === 'video' ? 'video' : kind + ':' + get('media-card').value, file);
     picker.value = '';
     updateMediaStatus();
-    if (index === 11 || index === 12 || index === 14) render();
+    if (['quiz2-q', 'quiz2-a', 'video'].includes(current.id)) render();
   });
 }
 
@@ -495,20 +625,30 @@ function renderGuestList() {
   list.replaceChildren();
   state.guests.forEach((guest, i) => {
     const row = node('div');
-    const name = node('input');
-    const role = node('input');
-    Object.assign(name, { value: guest.name, maxLength: 24 });
-    Object.assign(role, { value: guest.role, maxLength: 30 });
-    name.setAttribute('aria-label', '내빈 ' + (i + 1) + ' 이름');
-    role.setAttribute('aria-label', '내빈 ' + (i + 1) + ' 소개');
-    row.append(name, role, button('수정', () => {
-      if (!name.value.trim() || !role.value.trim()) return;
-      Object.assign(guest, { name: name.value.trim(), role: role.value.trim() });
+    const inputs = [['name', '이름', 24], ['role', '소속', 30], ['occupation', '하는 일', 30], ['hobby', '취미', 30]].map(([key, label, max]) => {
+      const input = node('input');
+      Object.assign(input, { value: guest[key] ?? '', maxLength: max, placeholder: label });
+      input.setAttribute('aria-label', '내빈 ' + (i + 1) + ' ' + label);
+      input.dataset.key = key;
+      return input;
+    });
+    const card = node('input');
+    Object.assign(card, { type: 'file', accept: 'image/*' });
+    card.setAttribute('aria-label', '내빈 ' + (i + 1) + ' 학생증 이미지');
+    card.addEventListener('change', () => {
+      if (!card.files[0]) return;
+      keepFile('guest:' + guest.name, card.files[0]);
+      updateGuests();
+    });
+    row.append(...inputs, button('수정', () => {
+      const values = Object.fromEntries(inputs.map(input => [input.dataset.key, input.value.trim()]));
+      if (!values.name || !values.role) return;
+      Object.assign(guest, values);
       updateGuests();
     }), button(guest.hidden ? '표시' : '숨김', () => {
       guest.hidden = !guest.hidden;
       updateGuests();
-    }));
+    }), card);
     list.append(row);
   });
 }
@@ -516,33 +656,31 @@ function renderGuestList() {
 function updateGuests() {
   save();
   renderGuestList();
-  if (index === 3) render();
+  if (current.id === 'guests') render();
 }
 
 get('score-form').addEventListener('submit', event => {
   event.preventDefault();
   const data = new FormData(event.currentTarget);
-  state.scores = houses.map((_, i) => Number(data.get('score' + i)));
-  save();
-  if (index === 18) render();
-  else notifyPresenter();
+  updateScores(houses.map((_, i) => Number(data.get('score' + i))));
   get('operator').close();
 });
 get('guest-form').addEventListener('submit', event => {
   event.preventDefault();
   const form = event.currentTarget;
   const data = new FormData(form);
-  const name = data.get('guest').trim();
-  const role = data.get('role').trim();
-  if (!name || !role) return;
-  state.guests.push({ name, role });
+  const guest = Object.fromEntries(['guest', 'role', 'occupation', 'hobby'].map(key => [key, String(data.get(key) ?? '').trim()]));
+  if (!guest.guest || !guest.role) return;
+  const file = data.get('card');
+  if (file?.size) keepFile('guest:' + guest.guest, file);
+  state.guests.push({ name: guest.guest, role: guest.role, occupation: guest.occupation, hobby: guest.hobby });
   form.reset();
   updateGuests();
 });
 get('staff').addEventListener('click', openOperator);
 get('contents').addEventListener('click', () => get('agenda').showModal());
-get('prev').addEventListener('click', () => go(index - 1));
-get('next').addEventListener('click', () => go(index + 1));
+get('prev').addEventListener('click', () => goStep(-1));
+get('next').addEventListener('click', () => goStep(1));
 async function fullscreen() {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
@@ -557,21 +695,21 @@ document.addEventListener('fullscreenchange', () => {
 });
 get('fullscreen').addEventListener('click', fullscreen);
 document.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => el.closest('dialog').close()));
-slides.forEach(([chapter], i) => {
-  const item = node('li');
-  item.append(button(chapter, () => {
+for (const item of [...flow, ...slides.filter(entry => entry.spare)]) {
+  const entry = node('li');
+  entry.append(button(item.spare ? item.chapter + ' (예비)' : item.chapter, () => {
     get('agenda').close();
-    go(i);
+    go(item);
   }));
-  get('agenda-list').append(item);
-});
+  get('agenda-list').append(entry);
+}
 document.addEventListener('keydown', event => {
   if (document.querySelector('dialog[open]') || event.target.matches('input,video,textarea,select')) return;
   if (['ArrowRight', 'PageDown', 'ArrowLeft', 'PageUp', 'Home', 'End'].includes(event.key)) {
     event.preventDefault();
-    if (event.key === 'Home') go(0);
-    else if (event.key === 'End') go(slides.length - 1);
-    else go(index + (['ArrowRight', 'PageDown'].includes(event.key) ? 1 : -1));
+    if (event.key === 'Home') go(flow[0]);
+    else if (event.key === 'End') go(flow.at(-1));
+    else goStep(['ArrowRight', 'PageDown'].includes(event.key) ? 1 : -1);
   } else if (event.key.toLowerCase() === 'f') fullscreen();
   else if (event.key.toLowerCase() === 'o') openOperator();
   else if (event.key === ' ' && event.target === document.body) {
@@ -580,9 +718,10 @@ document.addEventListener('keydown', event => {
   }
 });
 function restorePosition() {
-  const position = Number(location.hash.match(/^#p(\d+)$/)?.[1]);
-  index = position >= 1 && position <= slides.length ? position - 1 : 0;
-  if (index === 8) {
+  const hash = location.hash.slice(1);
+  const position = Number(hash.match(/^p(\d+)$/)?.[1]);
+  current = flow[position - 1] ?? byId.get(hash) ?? flow[0];
+  if (current.id === 'quiz1-q') {
     chosenCandidate = null;
     answerLocked = false;
   }
@@ -590,15 +729,23 @@ function restorePosition() {
   revealed = false;
   setCaption('');
   render();
-  if (index < slides.length - 1) {
-    const preload = new Image();
-    preload.src = './scenes/p' + String(index + 2).padStart(2, '0') + '.webp';
+  const upcoming = neighbour(1);
+  if (upcoming?.scene) {
+    for (const url of sceneUrl(upcoming.scene).matchAll(/url\("([^"]+)"\)/g)) new Image().src = url[1];
   }
 }
 addEventListener('hashchange', restorePosition);
 addEventListener('storage', event => {
   if (event.key !== storeKey) return;
   state = readState();
-  if (index === 3 || index === 18) render();
+  if (['guests', 'scores', 'winner'].includes(current.id)) render();
 });
 restorePosition();
+
+// 확인용: index.html?cues=3#p4 는 4번 슬라이드에서 장면 진행을 3번 누른다. ?scores=120,80,60,40 은 저장하지 않고 점수만 바꾼다.
+const checks = new URLSearchParams(location.search);
+if (checks.has('scores')) {
+  state.scores = checks.get('scores').split(',').map(Number);
+  render();
+}
+for (let i = 0; i < Number(checks.get('cues') ?? 0); i++) setTimeout(runCue, 400 * (i + 1));

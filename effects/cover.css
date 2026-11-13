@@ -1,0 +1,18 @@
+/* 연출 A3: 배가 흔들리다, 화면이 성의 불빛 쪽으로 다가가며 빛으로 바뀐다. */
+.slide[data-id=cover] .cover-lake{position:absolute;inset:0;pointer-events:none}
+.slide[data-id=cover] .cover-boat{position:absolute;translate:-50% -50%;animation:boat-bob 3.4s ease-in-out infinite alternate;filter:drop-shadow(0 .4cqw .6cqw #000)}
+.slide[data-id=cover] .cover-boat svg{display:block;width:100%;overflow:visible}
+.slide[data-id=cover] .boat-lantern{animation:lantern-flicker 1.7s ease-in-out infinite alternate}
+@keyframes boat-bob{0%{transform:translateY(-.35cqw) rotate(-2.2deg)}100%{transform:translateY(.35cqw) rotate(2.2deg)}}
+@keyframes lantern-flicker{0%{opacity:.75}40%{opacity:1}70%{opacity:.85}100%{opacity:1}}
+.slide[data-id=cover] .cover-light{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 64% 38%,#fff6d8,#ffd27a 30%,#2b1d1000 75%);opacity:0}
+
+/* 성으로 들어가기 */
+.slide[data-id=cover].entering :is(.eyebrow,h1,.description,.corner,.mark,.scene-frame,.reveal-standalone){animation:cover-fade .6s ease-in both}
+@keyframes cover-fade{to{opacity:0;translate:0 -1cqw}}
+.slide[data-id=cover].entering::before{transform-origin:64% 38%;animation:castle-dive 2.9s cubic-bezier(.55,0,.7,.35) both}
+@keyframes castle-dive{from{transform:scale(1)}to{transform:scale(3.6);filter:brightness(1.6)}}
+.slide[data-id=cover].entering .cover-lake{transform-origin:64% 38%;animation:lake-pass 2.9s cubic-bezier(.55,0,.7,.35) both}
+@keyframes lake-pass{0%{transform:scale(1)}60%{opacity:1}100%{transform:scale(3.6) translateY(12%);opacity:0}}
+.slide[data-id=cover].entering .cover-light{animation:cover-light 2.9s ease-in both}
+@keyframes cover-light{0%,55%{opacity:0}100%{opacity:1}}

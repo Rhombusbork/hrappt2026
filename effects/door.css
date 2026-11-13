@@ -1,0 +1,27 @@
+/* 연출 B5: 나무와 금장 두 짝 문. 열리면 볼룸이 확대되며 밝아진다. */
+.slide[data-id=part3] .door-frame{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:1fr 1fr;perspective:140cqw;pointer-events:none}
+.slide[data-id=part3] .door-leaf{position:relative;background:
+  linear-gradient(90deg,#0000 0 6%,#d8ad62 6% 6.4%,#0000 6.4% 93.6%,#d8ad62 93.6% 94%,#0000 94%),
+  linear-gradient(#0000 0 8%,#d8ad62 8% 8.5%,#0000 8.5% 52%,#d8ad62 52% 52.5%,#0000 52.5% 91.5%,#d8ad62 91.5% 92%,#0000 92%),
+  repeating-linear-gradient(90deg,#3d2312 0 .9cqw,#4a2b16 .9cqw 1.5cqw,#351e0f 1.5cqw 2.6cqw),
+  #3d2312;box-shadow:inset 0 0 6cqw #000c;border:.4cqw solid #b88a43;backface-visibility:hidden}
+.slide[data-id=part3] .door-left{transform-origin:0 50%;border-right-width:.2cqw}
+.slide[data-id=part3] .door-right{transform-origin:100% 50%;border-left-width:.2cqw}
+.slide[data-id=part3] .door-leaf::before{content:"";position:absolute;left:14%;right:14%;top:14%;height:30%;border:.25cqw solid #c99b52;border-radius:40% 40% .5cqw .5cqw/30% 30% .5cqw .5cqw;box-shadow:inset 0 0 2cqw #0008}
+.slide[data-id=part3] .door-leaf::after{content:"";position:absolute;left:14%;right:14%;top:58%;height:27%;border:.25cqw solid #c99b52;border-radius:.5cqw;box-shadow:inset 0 0 2cqw #0008}
+.slide[data-id=part3] .door-handle{position:absolute;top:47%;width:2.2cqw;height:2.2cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1c2,#d9a548 45%,#6b4512);box-shadow:0 .3cqw .6cqw #000a}
+.slide[data-id=part3] .door-left .door-handle{right:4%}
+.slide[data-id=part3] .door-right .door-handle{left:4%}
+.slide[data-id=part3] .door-light{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#fff3cf 0%,#ffd88a55 35%,#0000 70%);opacity:0}
+.slide[data-id=part3]:not(.doors-open) .reveal-standalone{position:relative;z-index:5}
+.slide[data-id=part3].doors-open .door-left{rotate:y -108deg;animation:door-left 1.8s cubic-bezier(.55,.05,.25,1) both}
+.slide[data-id=part3].doors-open .door-right{rotate:y 108deg;animation:door-right 1.8s cubic-bezier(.55,.05,.25,1) both}
+@keyframes door-left{0%{rotate:y 0deg}8%{rotate:y -4deg}100%{rotate:y -108deg}}
+@keyframes door-right{0%{rotate:y 0deg}8%{rotate:y 4deg}100%{rotate:y 108deg}}
+.slide[data-id=part3].doors-open .door-light{animation:door-light 2.2s .2s ease-out both}
+@keyframes door-light{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+.slide[data-id=part3].doors-open::before{animation:ballroom-in 2.6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes ballroom-in{from{transform:scale(1.35);filter:brightness(.35) saturate(.6)}to{transform:scale(1);filter:none}}
+.slide[data-id=part3].doors-open .door-frame{animation:door-gone .3s 1.9s both}
+@keyframes door-gone{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.slide[data-id=part3].doors-open .door-frame{display:none}}

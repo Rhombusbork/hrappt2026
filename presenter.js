@@ -13,38 +13,38 @@ buttons.forEach(button => {
   button.addEventListener('click', () => send(button.dataset.action, find('caption-input').value));
 });
 
-let shownIndex = -1;
+let shownId = null;
 window.addEventListener('message', event => {
   if (event.source !== window.opener || (origin !== '*' && event.origin !== origin)) return;
   const data = event.data;
   if (data?.hra !== 'stage') return;
-  const { index, title, next, actionLabel } = data;
-  const [line, direction, caption] = eventCues[index];
+  const { id, page, total, title, next, actionLabel } = data;
+  const [line, direction, caption] = eventCues[id] ?? ['', '', ''];
   scoreInputs.forEach((input, i) => { input.value = data.scores[i]; });
-  find('connection').textContent = '발표 화면 연결됨 · ' + String(index + 1).padStart(2, '0') + ' / 26';
+  find('connection').textContent = '발표 화면 연결됨 · ' + page + ' / ' + total;
   find('cue-title').textContent = title;
   find('cue-line').textContent = line;
   find('cue-direction').textContent = direction;
   find('cue-next').textContent = next ? '다음 화면 · ' + next : '마지막 화면';
-  if (shownIndex !== index) find('caption-input').value = caption;
-  shownIndex = index;
+  if (shownId !== id) find('caption-input').value = caption;
+  shownId = id;
   buttons.forEach(button => { button.disabled = false; });
   const action = find('cue-action');
   action.textContent = actionLabel || '장면 진행';
   action.disabled = !actionLabel;
-  document.querySelector('[data-action=prev]').disabled = index === 0;
+  document.querySelector('[data-action=prev]').disabled = data.first;
   document.querySelector('[data-action=next]').disabled = !next;
 });
 
 document.addEventListener('keydown', event => {
   if (event.target.matches('input,textarea,button,summary')) return;
   const action = { ArrowLeft: 'prev', ArrowRight: 'next', ' ': 'cue' }[event.key];
-  if (!action || shownIndex < 0) return;
+  if (!action || shownId === null) return;
   event.preventDefault();
   send(action);
 });
 
 send('ready');
 setTimeout(() => {
-  if (shownIndex < 0) find('connection').textContent = '발표 화면에서 사회자 버튼을 눌러 이 창을 열어 주세요.';
+  if (shownId === null) find('connection').textContent = '발표 화면에서 사회자 버튼을 눌러 이 창을 열어 주세요.';
 }, 1600);

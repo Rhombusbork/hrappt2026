@@ -1,0 +1,56 @@
+/* 연출 A2·A4: 부엉이, 인장, 두루마리. 부엉이와 막대 모양은 수상자 장(awards.css)과 같이 쓴다. */
+
+/* 부엉이 공통 */
+.slide:is([data-id=welcome],[data-id=awards]) .owl-flyer{position:absolute;z-index:4;pointer-events:none;filter:drop-shadow(0 1cqw 1.4cqw #000b)}
+.slide:is([data-id=welcome],[data-id=awards]) .owl{display:block;width:100%;overflow:visible}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing{transform-box:fill-box}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-left{transform-origin:100% 45%;animation:owl-flap-left .34s ease-in-out infinite alternate}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-right{transform-origin:0% 45%;animation:owl-flap-right .34s ease-in-out infinite alternate}
+@keyframes owl-flap-left{from{rotate:34deg}to{rotate:-26deg}}
+@keyframes owl-flap-right{from{rotate:-34deg}to{rotate:26deg}}
+
+/* 두루마리 막대 공통 */
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod{position:absolute;z-index:2;left:-1.6cqw;right:-1.6cqw;height:1.8cqw;border-radius:.9cqw;background:linear-gradient(#a0683a,#5a3416 55%,#2f1a0b);box-shadow:0 .4cqw .8cqw #0009,inset 0 .2cqw .2cqw #ffd59a55}
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::before,.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::after{content:"";position:absolute;top:-.35cqw;width:1.2cqw;height:2.5cqw;border-radius:.4cqw;background:linear-gradient(90deg,#8a6324,#f6d48c 45%,#9c7430)}
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::before{left:-.6cqw}
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::after{right:-.6cqw}
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod-top{top:-.9cqw}
+.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod-bottom{top:-.9cqw}
+
+/* 입학 축하 */
+.slide[data-id=welcome] .scroll-wrap{position:relative;width:min(70cqw,100%);margin-top:5cqw}
+.slide[data-id=welcome] .welcome-scroll{width:100%;margin:0;border-radius:0}
+.slide[data-id=welcome] .seal-split{position:absolute;z-index:3;left:50%;top:-4.2cqw;width:8.5cqw;aspect-ratio:1;translate:-50% 0;filter:drop-shadow(0 .5cqw .8cqw #000c);animation:seal-glow 1.6s ease-in-out infinite alternate}
+.slide[data-id=welcome] .seal-half{position:absolute;inset:0;background:url("../art/wax-seal.webp") center/contain no-repeat}
+.slide[data-id=welcome] .seal-left{clip-path:polygon(0 0,53% 0,46% 34%,56% 58%,47% 100%,0 100%)}
+.slide[data-id=welcome] .seal-right{clip-path:polygon(53% 0,100% 0,100% 100%,47% 100%,56% 58%,46% 34%)}
+@keyframes seal-glow{from{filter:drop-shadow(0 .5cqw .8cqw #000c)}to{filter:drop-shadow(0 0 1.4cqw #ffb85c99)}}
+
+.slide[data-id=welcome] .owl-flyer{width:16cqw;left:57%;top:9%;animation:owl-arrive 2.4s cubic-bezier(.2,.7,.25,1) both,owl-hover 1.8s 2.4s ease-in-out infinite alternate}
+@keyframes owl-arrive{from{translate:55cqw -32cqw;scale:.55}to{translate:0 0;scale:1}}
+@keyframes owl-hover{from{translate:0 0}to{translate:0 -1cqw}}
+
+/* 봉인 열기: 부엉이가 인장을 쪼아 열고 날아간다 → 인장이 갈라진다 → 아래 막대가 내려가며 종이가 펼쳐진다 */
+.slide[data-id=welcome].cue-revealed .owl-flyer{opacity:0;animation:owl-open 2.2s ease-in-out both}
+@keyframes owl-open{
+  0%{translate:0 0;opacity:1}
+  22%{translate:-6.5cqw 9cqw;opacity:1}
+  34%{translate:-5cqw 6cqw;opacity:1}
+  100%{translate:-70cqw -30cqw;scale:.6;opacity:1}
+}
+.slide[data-id=welcome].cue-revealed .seal-split{animation:none}
+.slide[data-id=welcome].cue-revealed .seal-left{animation:seal-left .8s .45s ease-in both}
+.slide[data-id=welcome].cue-revealed .seal-right{animation:seal-right .8s .45s ease-in both}
+@keyframes seal-left{from{translate:0 0;rotate:0deg;opacity:1}to{translate:-9cqw 6cqw;rotate:-40deg;opacity:0}}
+@keyframes seal-right{from{translate:0 0;rotate:0deg;opacity:1}to{translate:9cqw 6cqw;rotate:40deg;opacity:0}}
+.slide[data-id=welcome].cue-revealed .seal-half{opacity:0}
+.slide[data-id=welcome].cue-revealed .scroll-rod-bottom{top:calc(100% - .9cqw);animation:rod-down .95s .75s cubic-bezier(.25,.75,.2,1) both}
+.slide[data-id=welcome].cue-revealed .welcome-scroll{animation:scroll-unroll .95s .75s cubic-bezier(.25,.75,.2,1) both}
+.slide[data-id=welcome].cue-revealed .welcome-ko{animation:line-in .6s 1.55s both}
+.slide[data-id=welcome].cue-revealed .welcome-en{animation:line-in .6s 1.85s both}
+@keyframes rod-down{from{top:-.9cqw}}
+@keyframes scroll-unroll{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .slide[data-id=welcome].cue-revealed .seal-split{display:none}
+}

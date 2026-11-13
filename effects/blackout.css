@@ -1,0 +1,4 @@
+/* 연출 B1: 암전. 앞 장면(배너)의 그림에서 1.8초에 걸쳐 완전한 검정으로. */
+.slide[data-id=blackout]{background:#000 url("../scenes/p06.webp") center/cover}
+.slide[data-id=blackout] .blackout-veil{position:absolute;inset:0;background:#000;animation:blackout-fall 1.8s .15s ease-in both}
+@keyframes blackout-fall{from{opacity:.45}to{opacity:1}}
