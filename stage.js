@@ -118,6 +118,7 @@ function timer(parent, duration) {
     }, 150);
   });
   start.dataset.cue = 'true';
+  start.addEventListener('click', () => { start.dataset.used = 'true'; });
   const reset = button('초기화', () => {
     stopTimer();
     remaining = duration;
@@ -238,9 +239,9 @@ function studentCard(guest, i) {
 
 const sceneBodies = {
   welcome: body => {
-    const scroll = node('div', '', 'welcome-scroll reveal-target');
-    scroll.append(node('strong', '신입생 여러분 입학을 축하합니다', 'welcome-ko'), node('span', 'Welcome to HRAWarts', 'welcome-en'));
-    body.append(image('./art/wax-seal.webp', 'welcome-seal', '밀랍 인장'), scroll);
+    const scroll = node('div', '', 'welcome-scroll');
+    scroll.append(node('strong', '신입생 여러분 입학을 축하합니다', 'welcome-ko'), node('span', 'Welcome to HRA-Warts', 'welcome-en'));
+    body.append(scroll);
   },
   guests: body => {
     const visible = state.guests.filter(guest => !guest.hidden);
@@ -354,7 +355,7 @@ function showStep() {
 }
 
 const effectApi = {
-  next: () => goStep(1),
+  next: () => go(neighbour(1)),
   wait: ms => new Promise(resolve => setTimeout(resolve, ms)),
   reveal: () => reveal(),
   get reduced() { return reducedMotion(); },
@@ -430,11 +431,6 @@ function waiting() {
 function updateReveal() {
   const isWaiting = waiting();
   slide.classList.toggle('awaiting-cue', isWaiting);
-  if (!isWaiting) return;
-  if (current.suspense) slide.append(node('p', '정답을 공개할 준비가 되면 큐를 실행하세요.', 'suspense-line'));
-  const control = button(current.reveal, runCue);
-  control.className = 'reveal-standalone';
-  slide.append(control);
 }
 
 function reveal() {
@@ -457,12 +453,34 @@ function runCue() {
   if (reveal() || showStep()) return;
   if (current.id === 'video') {
     const video = slide.querySelector('video');
-    if (video) video.play().catch(() => video.focus());
+    if (video) {
+      video.dataset.used = 'true';
+      video.play().catch(() => video.focus());
+    }
     return;
   }
-  const control = slide.querySelector('[data-cue]');
-  if (control) control.click();
-  else if (current.cueNext) goStep(1);
+  const control = slide.querySelector('[data-cue]:not([data-used])');
+  if (control && !control.disabled) {
+    control.click();
+    control.dataset.used = 'true';
+  } else if (current.cueNext) go(neighbour(1));
+}
+
+// PPT처럼: 다음 버튼은 이 장에 남은 애니메이션이 있으면 그것을 먼저 실행하고, 없을 때만 다음 장으로 간다.
+function hasPending() {
+  try {
+    if (effect()?.pending?.(slide, effectApi)) return true;
+  } catch (error) {
+    console.error(error);
+  }
+  if (waiting()) return true;
+  if (current.steps && stepItems().some(item => !item.classList.contains('is-shown'))) return true;
+  if (current.id === 'video') {
+    const video = slide.querySelector('video');
+    if (video && !video.dataset.used) return true;
+  }
+  const control = slide.querySelector('[data-cue]:not([data-used])');
+  return Boolean(control && !control.disabled);
 }
 
 function actionLabel() {
@@ -565,6 +583,10 @@ function go(item) {
 }
 
 function goStep(direction) {
+  if (direction > 0 && hasPending()) {
+    runCue();
+    return;
+  }
   go(neighbour(direction));
 }
 

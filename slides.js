@@ -2,9 +2,9 @@
 // 순서를 바꾸려면 이 배열의 줄만 옮기면 된다. id는 바꾸지 않는다.
 const slides = [
   { id: 'cover', chapter: '입장 대기', eyebrow: 'HRA 2026  /  YEAR-END PARTY', title: '해피 크리스마스, 흐라', description: '검은 호수를 건너, 오늘 밤의 연회로.', theme: 'hero', scene: 'p01', cue: '성으로 들어가기', cueNext: true, effect: 'cover', corner: '2026.12.26  ·  JEJU' },
-  { id: 'welcome', chapter: '입학 축하', theme: 'center', scene: 'p24', body: 'welcome', reveal: '봉인 열기', revealAlways: true, revealHide: [], effect: 'owl-letter' },
+  { id: 'welcome', chapter: '입학 축하', theme: 'center', scene: 'p24', body: 'welcome', cue: '양피지 말기', effect: 'owl-letter' },
   { id: 'opening', chapter: '개회', eyebrow: '개회', title: '대연회장의 문이 열립니다', description: '기숙사 대항전 · 크리스마스 만찬 · 명예의 전당', theme: 'center', scene: 'p03', spare: true, after: 'welcome' },
-  { id: 'guests', chapter: '내빈 소개', eyebrow: '내빈 소개', theme: 'center', scene: 'p03', body: 'guests', steps: 'auto', stepsStart: 1, stepLabel: '다음 학생증', effect: 'invite-close' },
+  { id: 'guests', chapter: '내빈 소개', eyebrow: '내빈 소개', theme: 'center', scene: 'p03', body: 'guests', steps: 'auto', stepsStart: 1, stepLabel: '다음 학생증' },
   { id: 'houses', chapter: '기숙사 배정', theme: 'bare', scene: 'p06', body: 'houses', steps: 'auto', stepLabel: '배너 내리기', effect: 'banners' },
   { id: 'students', chapter: '20기 소개', eyebrow: '20기 소개', title: 'HRA 20기 학생증', description: '마법학교 신입생들을 소개합니다.', theme: 'center', scene: 'p07', body: 'students', spare: true, after: 'houses' },
   { id: 'blackout', chapter: '암전', theme: 'blackout', effect: 'blackout' },

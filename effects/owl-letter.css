@@ -1,56 +1,80 @@
-/* 연출 A2·A4: 부엉이, 인장, 두루마리. 부엉이와 막대 모양은 수상자 장(awards.css)과 같이 쓴다. */
+/* C02 입학 축하: 실사 부엉이와 양피지. 콘티: 작업계획/콘티/C02_입학축하_부엉이와_양피지.md
+   기본 스타일 = 끝 상태(정지 비행, 펼쳐진 양피지). 움직임 줄이기 모드에서는 이 모습만 보인다. */
 
-/* 부엉이 공통 */
-.slide:is([data-id=welcome],[data-id=awards]) .owl-flyer{position:absolute;z-index:4;pointer-events:none;filter:drop-shadow(0 1cqw 1.4cqw #000b)}
-.slide:is([data-id=welcome],[data-id=awards]) .owl{display:block;width:100%;overflow:visible}
-.slide:is([data-id=welcome],[data-id=awards]) .owl-wing{transform-box:fill-box}
-.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-left{transform-origin:100% 45%;animation:owl-flap-left .34s ease-in-out infinite alternate}
-.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-right{transform-origin:0% 45%;animation:owl-flap-right .34s ease-in-out infinite alternate}
-@keyframes owl-flap-left{from{rotate:34deg}to{rotate:-26deg}}
-@keyframes owl-flap-right{from{rotate:-34deg}to{rotate:26deg}}
+/* 부엉이 공통 (수상자 장에서도 쓴다) */
+.slide:is([data-id=welcome],[data-id=awards]) .owl-flyer{--flap:1.1s;--amp:12deg;position:absolute;z-index:3;pointer-events:none;filter:drop-shadow(0 1.2cqw 1.6cqw #000a)}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-rig{position:relative;aspect-ratio:1200/744;animation:owl-lift var(--flap) infinite}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-part{position:absolute;inset:0;width:100%;height:100%;user-select:none}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-left{transform-origin:48.75% 23.5%;animation:owl-flap-left var(--flap) infinite}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-right{transform-origin:62.1% 22.8%;animation:owl-flap-right var(--flap) infinite}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-wing-low{transform-origin:40.8% 43%;animation:owl-flap-low var(--flap) infinite}
+.slide:is([data-id=welcome],[data-id=awards]) .owl-hold{position:absolute;left:-21.05%;width:142.1%;top:52%}
+/* 한 번의 날갯짓: 내림 56%(힘), 올림 44%(날개를 조금 접음). 원래 그림이 가장 높이 든 자세다 */
+@keyframes owl-flap-left{0%{rotate:0deg;scale:.94 1;animation-timing-function:cubic-bezier(.45,0,.55,1)}56%{rotate:calc(var(--amp) * -1);scale:1 1;animation-timing-function:cubic-bezier(.45,0,.55,1)}100%{rotate:0deg;scale:.94 1}}
+@keyframes owl-flap-right{0%{rotate:0deg;scale:.94 1;animation-timing-function:cubic-bezier(.45,0,.55,1)}56%{rotate:var(--amp);scale:1 1;animation-timing-function:cubic-bezier(.45,0,.55,1)}100%{rotate:0deg;scale:.94 1}}
+@keyframes owl-flap-low{0%{rotate:0deg;animation-timing-function:cubic-bezier(.45,0,.55,1)}56%{rotate:calc(var(--amp) * -.45);animation-timing-function:cubic-bezier(.45,0,.55,1)}100%{rotate:0deg}}
+@keyframes owl-lift{0%{translate:0 0;animation-timing-function:cubic-bezier(.45,0,.55,1)}56%{translate:0 -.4cqw;animation-timing-function:cubic-bezier(.45,0,.55,1)}100%{translate:0 0}}
 
-/* 두루마리 막대 공통 */
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod{position:absolute;z-index:2;left:-1.6cqw;right:-1.6cqw;height:1.8cqw;border-radius:.9cqw;background:linear-gradient(#a0683a,#5a3416 55%,#2f1a0b);box-shadow:0 .4cqw .8cqw #0009,inset 0 .2cqw .2cqw #ffd59a55}
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::before,.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::after{content:"";position:absolute;top:-.35cqw;width:1.2cqw;height:2.5cqw;border-radius:.4cqw;background:linear-gradient(90deg,#8a6324,#f6d48c 45%,#9c7430)}
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::before{left:-.6cqw}
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod::after{right:-.6cqw}
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod-top{top:-.9cqw}
-.slide:is([data-id=welcome],[data-id=awards]) .scroll-rod-bottom{top:-.9cqw}
+/* 두루마리 막대 공통 (수상자 장 award-slot에서 쓴다) */
+.slide[data-id=awards] .scroll-rod,.slide[data-id=welcome] .scroll-rod-top{position:absolute;z-index:2;left:-1.2cqw;right:-1.2cqw;height:1.6cqw;border-radius:.8cqw;background:linear-gradient(#a0683a,#5a3416 55%,#2f1a0b);box-shadow:0 .4cqw .8cqw #0009,inset 0 .2cqw .2cqw #ffd59a55}
+.slide[data-id=awards] .scroll-rod::before,.slide[data-id=awards] .scroll-rod::after,.slide[data-id=welcome] .scroll-rod-top::before,.slide[data-id=welcome] .scroll-rod-top::after{content:"";position:absolute;top:-.3cqw;width:1.1cqw;height:2.2cqw;border-radius:.4cqw;background:linear-gradient(90deg,#8a6324,#f6d48c 45%,#9c7430)}
+.slide[data-id=awards] .scroll-rod::before,.slide[data-id=welcome] .scroll-rod-top::before{left:-.55cqw}
+.slide[data-id=awards] .scroll-rod::after,.slide[data-id=welcome] .scroll-rod-top::after{right:-.55cqw}
+.slide[data-id=awards] .scroll-rod-top,.slide[data-id=awards] .scroll-rod-bottom{top:-.9cqw}
 
-/* 입학 축하 */
-.slide[data-id=welcome] .scroll-wrap{position:relative;width:min(70cqw,100%);margin-top:5cqw}
-.slide[data-id=welcome] .welcome-scroll{width:100%;margin:0;border-radius:0}
-.slide[data-id=welcome] .seal-split{position:absolute;z-index:3;left:50%;top:-4.2cqw;width:8.5cqw;aspect-ratio:1;translate:-50% 0;filter:drop-shadow(0 .5cqw .8cqw #000c);animation:seal-glow 1.6s ease-in-out infinite alternate}
-.slide[data-id=welcome] .seal-half{position:absolute;inset:0;background:url("../art/wax-seal.webp") center/contain no-repeat}
-.slide[data-id=welcome] .seal-left{clip-path:polygon(0 0,53% 0,46% 34%,56% 58%,47% 100%,0 100%)}
-.slide[data-id=welcome] .seal-right{clip-path:polygon(53% 0,100% 0,100% 100%,47% 100%,56% 58%,46% 34%)}
-@keyframes seal-glow{from{filter:drop-shadow(0 .5cqw .8cqw #000c)}to{filter:drop-shadow(0 0 1.4cqw #ffb85c99)}}
+/* 입학 축하: 배치 */
+.slide[data-id=welcome] .scene-body{margin:0}
+.slide[data-id=welcome] .owl-flyer{left:30cqw;top:4.6cqw;width:40cqw}
+.slide[data-id=welcome] .owl-scroll{position:relative;height:22.4cqw;transform-origin:50% 0}
+.slide[data-id=welcome] .scroll-rod-top{top:0}
+.slide[data-id=welcome] .scroll-paper{position:absolute;top:1.1cqw;left:0;right:0;height:20cqw;background:radial-gradient(ellipse at 50% 45%,#f5e6c4,#e3c792 70%,#c9a46a),url("../scenes/parchment.webp") center/cover;box-shadow:inset 0 0 2.4cqw #7a4f2266,0 1cqw 2cqw #0008;clip-path:inset(0)}
+.slide[data-id=welcome] .scroll-paper .welcome-scroll{position:absolute;inset:0;display:block;width:auto;margin:0;padding:0;background:none;border:0;box-shadow:none;animation:none}
+.slide[data-id=welcome] .scroll-paper .welcome-ko{position:absolute;left:0;right:0;top:25%;text-align:center;font-size:3.1cqw;font-weight:800;line-height:1.2;color:#3a2414;letter-spacing:-.02em;animation:none}
+.slide[data-id=welcome] .scroll-paper .welcome-en{position:absolute;left:0;right:0;top:57%;text-align:center;font-size:2.9cqw;font-weight:700;color:#4a1f22;animation:none}
+/* 아래쪽 말린 원통: 펼쳐진 상태에서는 종이 끝에 있다 */
+.slide[data-id=welcome] .scroll-roll{position:absolute;z-index:2;left:-.6cqw;right:-.6cqw;top:.4cqw;height:2.6cqw;border-radius:1.3cqw;background:linear-gradient(#7c5428,#e9d3a4 30%,#f6e6c2 45%,#c9a46a 70%,#6d4a22);box-shadow:0 .6cqw 1cqw #0009;translate:0 20cqw;scale:1 .9}
+.slide[data-id=welcome] .scroll-roll::before,.slide[data-id=welcome] .scroll-roll::after{content:"";position:absolute;top:.2cqw;width:1cqw;height:2.2cqw;border-radius:50%;background:radial-gradient(circle,#8a6534 0 28%,#d9bd86 30% 55%,#7c5428 58%)}
+.slide[data-id=welcome] .scroll-roll::before{left:-.3cqw}
+.slide[data-id=welcome] .scroll-roll::after{right:-.3cqw}
 
-.slide[data-id=welcome] .owl-flyer{width:16cqw;left:57%;top:9%;animation:owl-arrive 2.4s cubic-bezier(.2,.7,.25,1) both,owl-hover 1.8s 2.4s ease-in-out infinite alternate}
-@keyframes owl-arrive{from{translate:55cqw -32cqw;scale:.55}to{translate:0 0;scale:1}}
-@keyframes owl-hover{from{translate:0 0}to{translate:0 -1cqw}}
+/* S1: 1번에서 넘어왔을 때 금빛이 걷히며 배경이 다가와 멈춘다 */
+.slide[data-id=welcome] .from-cover-light{position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(circle at 50% 50%,#fff3d0,#ffc070 70%,#d08a3c);opacity:0;animation:welcome-light-out .7s ease-out both}
+@keyframes welcome-light-out{from{opacity:1}to{opacity:0}}
+.slide[data-id=welcome].from-cover::before{animation:welcome-arrive 1.4s cubic-bezier(.16,1,.3,1) both}
+@keyframes welcome-arrive{from{transform:scale(1.06)}to{transform:scale(1)}}
 
-/* 봉인 열기: 부엉이가 인장을 쪼아 열고 날아간다 → 인장이 갈라진다 → 아래 막대가 내려가며 종이가 펼쳐진다 */
-.slide[data-id=welcome].cue-revealed .owl-flyer{opacity:0;animation:owl-open 2.2s ease-in-out both}
-@keyframes owl-open{
-  0%{translate:0 0;opacity:1}
-  22%{translate:-6.5cqw 9cqw;opacity:1}
-  34%{translate:-5cqw 6cqw;opacity:1}
-  100%{translate:-70cqw -30cqw;scale:.6;opacity:1}
-}
-.slide[data-id=welcome].cue-revealed .seal-split{animation:none}
-.slide[data-id=welcome].cue-revealed .seal-left{animation:seal-left .8s .45s ease-in both}
-.slide[data-id=welcome].cue-revealed .seal-right{animation:seal-right .8s .45s ease-in both}
-@keyframes seal-left{from{translate:0 0;rotate:0deg;opacity:1}to{translate:-9cqw 6cqw;rotate:-40deg;opacity:0}}
-@keyframes seal-right{from{translate:0 0;rotate:0deg;opacity:1}to{translate:9cqw 6cqw;rotate:40deg;opacity:0}}
-.slide[data-id=welcome].cue-revealed .seal-half{opacity:0}
-.slide[data-id=welcome].cue-revealed .scroll-rod-bottom{top:calc(100% - .9cqw);animation:rod-down .95s .75s cubic-bezier(.25,.75,.2,1) both}
-.slide[data-id=welcome].cue-revealed .welcome-scroll{animation:scroll-unroll .95s .75s cubic-bezier(.25,.75,.2,1) both}
-.slide[data-id=welcome].cue-revealed .welcome-ko{animation:line-in .6s 1.55s both}
-.slide[data-id=welcome].cue-revealed .welcome-en{animation:line-in .6s 1.85s both}
-@keyframes rod-down{from{top:-.9cqw}}
-@keyframes scroll-unroll{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+/* S2~S4: 등장, 제동, 정지 비행 */
+.slide[data-id=welcome].owl-arriving .owl-flyer{--flap:.8s;--amp:14deg;animation:owl-arrive 2.6s .6s cubic-bezier(.3,.6,.35,1) both}
+@keyframes owl-arrive{0%{translate:62cqw -34cqw;scale:.55;rotate:10deg}45%{translate:24cqw -21cqw;scale:.8;rotate:5deg}100%{translate:0 0;scale:1;rotate:0deg}}
+.slide[data-id=welcome].owl-arriving .owl-bob{animation:owl-flare .7s 3.2s cubic-bezier(.16,1,.3,1) both}
+@keyframes owl-flare{0%{translate:0 0;rotate:0deg}40%{translate:0 -.6cqw;rotate:-6deg}100%{translate:0 0;rotate:0deg}}
+.slide[data-id=welcome].owl-arriving .owl-scroll{animation:scroll-swing 1.2s 3.2s cubic-bezier(.45,0,.55,1) both}
+@keyframes scroll-swing{0%{rotate:0deg}25%{rotate:5deg}50%{rotate:-3deg}75%{rotate:1.5deg}100%{rotate:0deg}}
+.slide[data-id=welcome].owl-hovering .owl-flyer{--flap:1.1s;--amp:12deg}
+.slide[data-id=welcome].owl-hovering .owl-bob{animation:owl-hover 2.2s ease-in-out infinite alternate}
+@keyframes owl-hover{from{translate:0 0}to{translate:0 -.4cqw}}
 
-@media (prefers-reduced-motion:reduce){
-  .slide[data-id=welcome].cue-revealed .seal-split{display:none}
-}
+/* 말린 상태(등장 중) */
+.slide[data-id=welcome].owl-arriving:not(.owl-unrolling) .scroll-paper{clip-path:inset(0 0 100% 0)}
+.slide[data-id=welcome].owl-arriving:not(.owl-unrolling) .scroll-roll{translate:0 0;scale:1 1}
+
+/* S5: 위에서 아래로 천천히 펼침. 글씨는 종이에 붙어 움직이지 않고, 원통이 지나간 만큼만 보인다 */
+.slide[data-id=welcome].owl-unrolling .scroll-paper{animation:paper-unroll 3s cubic-bezier(.45,.05,.35,1) both}
+.slide[data-id=welcome].owl-unrolling .scroll-roll{animation:roll-down 3s cubic-bezier(.45,.05,.35,1) both}
+@keyframes paper-unroll{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes roll-down{from{translate:0 0;scale:1 1}to{translate:0 20cqw;scale:1 .9}}
+.slide[data-id=welcome].owl-unrolling::before{animation:welcome-push 3s cubic-bezier(.45,0,.55,1) both}
+@keyframes welcome-push{from{transform:scale(1)}to{transform:scale(1.04)}}
+.slide[data-id=welcome].owl-open::before{animation:none;transform:scale(1.04)}
+
+/* S7: 말려 올라감 */
+.slide[data-id=welcome].owl-rolling .scroll-paper{animation:paper-rollup 1.4s cubic-bezier(.45,0,.55,1) both}
+.slide[data-id=welcome].owl-rolling .scroll-roll{animation:roll-up 1.4s cubic-bezier(.45,0,.55,1) both}
+@keyframes paper-rollup{from{clip-path:inset(0)}to{clip-path:inset(0 0 100% 0)}}
+@keyframes roll-up{from{translate:0 20cqw;scale:1 .9}to{translate:0 0;scale:1 1}}
+.slide[data-id=welcome].owl-rolling::before{animation:welcome-pull 1.4s cubic-bezier(.45,0,.55,1) both}
+@keyframes welcome-pull{from{transform:scale(1.04)}to{transform:scale(1)}}
+
+/* S8: 몸을 낮췄다가 빠르게 저으며 왼쪽 위로 떠난다 */
+.slide[data-id=welcome].owl-departing .owl-flyer{--flap:.6s;--amp:16deg;animation:owl-depart 1.4s cubic-bezier(.5,0,.75,.6) both}
+@keyframes owl-depart{0%{translate:0 0;scale:1;rotate:0deg}18%{translate:0 .8cqw;scale:1;rotate:0deg}100%{translate:-62cqw -38cqw;scale:.6;rotate:-8deg}}
