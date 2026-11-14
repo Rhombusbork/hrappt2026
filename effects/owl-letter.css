@@ -24,15 +24,16 @@
 
 /* 입학 축하: 배치 */
 .slide[data-id=welcome] .scene-body{margin:0}
-.slide[data-id=welcome] .owl-flyer{left:30cqw;top:4.6cqw;width:40cqw}
-.slide[data-id=welcome] .owl-scroll{position:relative;height:22.4cqw;transform-origin:50% 0}
+.slide[data-id=welcome] .owl-flyer{left:33cqw;top:1.6cqw;width:34cqw}
+.slide[data-id=welcome] .owl-hold{left:8.82%;width:82.35%}
+.slide[data-id=welcome] .owl-scroll{position:relative;height:40cqw;transform-origin:50% 0}
 .slide[data-id=welcome] .scroll-rod-top{top:0}
-.slide[data-id=welcome] .scroll-paper{position:absolute;top:1.1cqw;left:0;right:0;height:20cqw;background:radial-gradient(ellipse at 50% 45%,#f5e6c4,#e3c792 70%,#c9a46a),url("../scenes/parchment.webp") center/cover;box-shadow:inset 0 0 2.4cqw #7a4f2266,0 1cqw 2cqw #0008;clip-path:inset(0)}
+.slide[data-id=welcome] .scroll-paper{position:absolute;top:1.1cqw;left:1.35cqw;right:1.35cqw;height:38cqw;background:url("../assets/cuts/C02/paper.webp") center/100% 100%;box-shadow:0 1cqw 2cqw #0008;clip-path:inset(0)}
 .slide[data-id=welcome] .scroll-paper .welcome-scroll{position:absolute;inset:0;display:block;width:auto;margin:0;padding:0;background:none;border:0;box-shadow:none;animation:none}
-.slide[data-id=welcome] .scroll-paper .welcome-ko{position:absolute;left:0;right:0;top:25%;text-align:center;font-size:3.1cqw;font-weight:800;line-height:1.2;color:#3a2414;letter-spacing:-.02em;animation:none}
-.slide[data-id=welcome] .scroll-paper .welcome-en{position:absolute;left:0;right:0;top:57%;text-align:center;font-size:2.9cqw;font-weight:700;color:#4a1f22;animation:none}
+.slide[data-id=welcome] .scroll-paper .welcome-ko{position:absolute;left:0;right:0;top:27%;text-align:center;font-size:2.6cqw;font-weight:800;line-height:1.35;color:#3a2414;letter-spacing:-.02em;white-space:pre-line;animation:none}
+.slide[data-id=welcome] .scroll-paper .welcome-en{position:absolute;left:0;right:0;top:55%;text-align:center;font-size:2.6cqw;font-weight:700;line-height:1.3;color:#4a1f22;white-space:pre-line;animation:none}
 /* 아래쪽 말린 원통: 펼쳐진 상태에서는 종이 끝에 있다 */
-.slide[data-id=welcome] .scroll-roll{position:absolute;z-index:2;left:-.6cqw;right:-.6cqw;top:.4cqw;height:2.6cqw;border-radius:1.3cqw;background:linear-gradient(#7c5428,#e9d3a4 30%,#f6e6c2 45%,#c9a46a 70%,#6d4a22);box-shadow:0 .6cqw 1cqw #0009;translate:0 20cqw;scale:1 .9}
+.slide[data-id=welcome] .scroll-roll{position:absolute;z-index:2;left:.75cqw;right:.75cqw;top:.4cqw;height:2.6cqw;border-radius:1.3cqw;background:linear-gradient(#7c5428,#e9d3a4 30%,#f6e6c2 45%,#c9a46a 70%,#6d4a22);box-shadow:0 .6cqw 1cqw #0009;translate:0 38cqw;scale:1 .9}
 .slide[data-id=welcome] .scroll-roll::before,.slide[data-id=welcome] .scroll-roll::after{content:"";position:absolute;top:.2cqw;width:1cqw;height:2.2cqw;border-radius:50%;background:radial-gradient(circle,#8a6534 0 28%,#d9bd86 30% 55%,#7c5428 58%)}
 .slide[data-id=welcome] .scroll-roll::before{left:-.3cqw}
 .slide[data-id=welcome] .scroll-roll::after{right:-.3cqw}
@@ -62,7 +63,7 @@
 .slide[data-id=welcome].owl-unrolling .scroll-paper{animation:paper-unroll 3s cubic-bezier(.45,.05,.35,1) both}
 .slide[data-id=welcome].owl-unrolling .scroll-roll{animation:roll-down 3s cubic-bezier(.45,.05,.35,1) both}
 @keyframes paper-unroll{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
-@keyframes roll-down{from{translate:0 0;scale:1 1}to{translate:0 20cqw;scale:1 .9}}
+@keyframes roll-down{from{translate:0 0;scale:1 1}to{translate:0 38cqw;scale:1 .9}}
 .slide[data-id=welcome].owl-unrolling::before{animation:welcome-push 3s cubic-bezier(.45,0,.55,1) both}
 @keyframes welcome-push{from{transform:scale(1)}to{transform:scale(1.04)}}
 .slide[data-id=welcome].owl-open::before{animation:none;transform:scale(1.04)}
@@ -71,7 +72,7 @@
 .slide[data-id=welcome].owl-rolling .scroll-paper{animation:paper-rollup 1.4s cubic-bezier(.45,0,.55,1) both}
 .slide[data-id=welcome].owl-rolling .scroll-roll{animation:roll-up 1.4s cubic-bezier(.45,0,.55,1) both}
 @keyframes paper-rollup{from{clip-path:inset(0)}to{clip-path:inset(0 0 100% 0)}}
-@keyframes roll-up{from{translate:0 20cqw;scale:1 .9}to{translate:0 0;scale:1 1}}
+@keyframes roll-up{from{translate:0 38cqw;scale:1 .9}to{translate:0 0;scale:1 1}}
 .slide[data-id=welcome].owl-rolling::before{animation:welcome-pull 1.4s cubic-bezier(.45,0,.55,1) both}
 @keyframes welcome-pull{from{transform:scale(1.04)}to{transform:scale(1)}}
 

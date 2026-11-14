@@ -240,7 +240,7 @@ function studentCard(guest, i) {
 const sceneBodies = {
   welcome: body => {
     const scroll = node('div', '', 'welcome-scroll');
-    scroll.append(node('strong', '신입생 여러분 입학을 축하합니다', 'welcome-ko'), node('span', 'Welcome to HRA-Warts', 'welcome-en'));
+    scroll.append(node('strong', '신입생 여러분\n입학을 축하합니다', 'welcome-ko'), node('span', 'Welcome to\nHRA-Warts', 'welcome-en'));
     body.append(scroll);
   },
   guests: body => {
